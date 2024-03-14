@@ -22,15 +22,14 @@ class RLock:
         timed out or was not available immediately if blocking=False.
 
         Arguments:
-            blocking: If True this method will wait for the lock to become availble.
-                      Otherwise it will return False immediately if the lock is
+            blocking: If True this method will wait for the lock to become available.
+                      Otherwise, it will return False immediately if the lock is
                       not immediately available.
             timeout: A positive number of seconds to wait for the lock. If negative
-                     this is interpretted as an indefinite wait. This argument
+                     this is interpreted as an indefinite wait. This argument
                      is ignored if blocking is False.
             count: The number of times to acquire the re-entrant lock. This is
-                   equivalant to calling acquire() `count` times.
-        I
+                   equivalent to calling acquire() `count` times.
         """
         if count < 1:
             raise ValueError("lock count must be a positive integer")
@@ -58,7 +57,7 @@ class RLock:
         with self.meta_lock:
             if not self.lockers.pop(waiter, None):
                 # If someone removed us from lockers then we were actually signalled
-                # just happened to time out at the sameish time.
+                # just happened to time out at the same time.
                 assert self.owner == ident and self.lock_count == count
                 return True
 
@@ -72,7 +71,7 @@ class RLock:
 
         Arguments:
             count: The number of times to release the re-entrant lock. This is
-                   equivalant to calling release() `count` times.
+                   equivalent to calling release() `count` times.
         """
         if count < 1:
             raise ValueError("unlock count must be a positive integer")

@@ -1,3 +1,4 @@
+import time
 from threading import (
     get_ident,
     Lock as BaseLock,
@@ -37,9 +38,9 @@ class Condition:
         condition was signalled or False if the wait timeout expired.
 
         Arguments:
-            timeout: If a positive number this will be interpretted as a
-                     a timeout in seconds. Negative numbers will be interpretted
-                     as an indefiinite wait.
+            timeout: If a positive number this will be interpreted as
+                     a timeout in seconds. Negative numbers will be interpreted
+                     as an indefinite wait.
         """
         ident = get_ident()
         if self.lock.owner != ident:
@@ -117,37 +118,3 @@ class Condition:
         with self.lock.meta_lock:
             self.lock.lockers.update(self.waiters)
             self.waiters.clear()
-
-
-def test():
-    from threading import Thread
-    import time
-
-    lck = Condition()
-    # lck = Lock()
-
-    counter = 2
-
-    def work(tid):
-        nonlocal counter
-        for i in range(1000):
-            with lck:
-                lck.wait_for(lambda: counter > 0)
-                counter -= 1
-
-            print("got object", tid)
-            time.sleep(0.25)
-
-            with lck:
-                counter += 1
-                lck.notify()
-
-    threads = [Thread(target=work, args=(tid,)) for tid in range(10)]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join()
-
-
-if __name__ == "__main__":
-    test()
